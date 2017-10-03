@@ -1,12 +1,3 @@
 language: java
+jdk: oraclejdk9
 dist: trusty
-sudo: false
-
-before_install:
-- cd ~
-- wget http://download.java.net/java/jdk9/archive/180/binaries/jdk-9+180_linux-x64_bin.tar.gz
-- tar -xzf jdk-9+180_linux-x64_bin.tar.gz
-- export JAVA_HOME=$PWD/jdk-9
-- PATH=$JAVA_HOME/bin:$PATH
-- java -version
-- cd $TRAVIS_BUILD_DIR
