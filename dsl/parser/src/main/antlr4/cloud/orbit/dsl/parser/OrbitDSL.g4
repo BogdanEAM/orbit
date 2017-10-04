@@ -40,14 +40,13 @@ optionDeclaration: 'option' Identifier '=' literal ';';
 topLeveltypeDeclaration: grainDeclaration | objectDeclaration | enumDeclaration;
 
 grainDeclaration: 'grain' Identifier grainBody;
-grainBody: '{' messageDeclaration '}';
+grainBody: '{' messageDeclaration+? '}';
 messageDeclaration: type Identifier '(' messageFields? ');';
 messageFields: messageField | messageField (',' messageField)*;
 messageField: type Identifier '=' IntegerLiteral;
 
 objectDeclaration: 'object' Identifier objectBody;
-objectBody: '{' objectFields? '}';
-objectFields: objectField+;
+objectBody: '{' objectField+? '}';
 objectField: type Identifier '=' IntegerLiteral ';';
 
 enumDeclaration: 'enum' Identifier enumBody;
