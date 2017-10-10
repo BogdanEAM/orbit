@@ -29,27 +29,27 @@ grammar OrbitDSL;
 
 compilationUnit:
         packageDeclaration
-        (importDelcaration | optionDeclaration)*
+        (importDeclaration | optionDeclaration)*
         topLeveltypeDeclaration*
         EOF
     ;
 
 packageDeclaration: 'package' packageIdentifier ';';
-importDelcaration: 'import' packageIdentifier ';';
+importDeclaration: 'import' packageIdentifier ';';
 optionDeclaration: 'option' Identifier '=' literal ';';
-topLeveltypeDeclaration: grainDeclaration | objectDeclaration | enumDeclaration;
+topLeveltypeDeclaration: grainDeclaration | structDeclaration | enumDeclaration;
 
 grainDeclaration: 'grain' Identifier grainBody;
 grainBody: '{' grainBodyDeclaration* '}';
-grainBodyDeclaration: (messageDeclaration | objectDeclaration | enumDeclaration);
+grainBodyDeclaration: (messageDeclaration | structDeclaration | enumDeclaration);
 messageDeclaration: type Identifier '(' messageFields? ');';
 messageFields: messageField | messageField (',' messageField)*;
 messageField: type Identifier '=' IntegerLiteral;
 
-objectDeclaration: 'object' Identifier objectBody;
-objectBody: '{' objectBodyDeclaration* '}';
-objectBodyDeclaration: (objectField | objectDeclaration | enumDeclaration);
-objectField: type Identifier '=' IntegerLiteral ';';
+structDeclaration: 'struct' Identifier structBody;
+structBody: '{' structBodyDeclaration* '}';
+structBodyDeclaration: (structField | structDeclaration | enumDeclaration);
+structField: type Identifier '=' IntegerLiteral ';';
 
 enumDeclaration: 'enum' Identifier enumBody;
 enumBody: '{' enumFields? '}';

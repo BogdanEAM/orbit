@@ -3,7 +3,7 @@
 The Orbit DSL is a domain specific language for serializing structured
 types that cross process boundaries in the Orbit framework.
 
-Users define objects, grain interfaces and other types in `.opf`
+Users define structs, grain interfaces and other types in `.opf`
 files which are then compiled to Java for use at runtime.
 
 The Orbit DSL has similar aims to
@@ -27,7 +27,7 @@ grain User {
         DENIED = 1
     }
 
-    object LoginRequest {
+    struct LoginRequest {
         String username = 0;
         String password = 1;
     }

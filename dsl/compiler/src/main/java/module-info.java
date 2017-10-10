@@ -25,7 +25,7 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-module cloud.orbit.dsl.compilers {
+module cloud.orbit.dsl.compiler {
     exports cloud.orbit.dsl.compiler;
 
     requires cloud.orbit.dsl.parser;

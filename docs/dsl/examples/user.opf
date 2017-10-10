@@ -6,7 +6,7 @@ grain User {
         DENIED = 1
     }
 
-    object LoginRequest {
+    struct LoginRequest {
         String username = 0;
         String password = 1;
     }
