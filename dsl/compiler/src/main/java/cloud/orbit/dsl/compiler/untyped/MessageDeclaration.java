@@ -26,23 +26,44 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit.dsl.compiler;
+package cloud.orbit.dsl.compiler.untyped;
 
-import cloud.orbit.dsl.parser.OrbitDSLLexer;
-import cloud.orbit.dsl.parser.OrbitDSLParser;
-import org.antlr.v4.runtime.*;
+import cloud.orbit.dsl.compiler.core.Util;
+import cloud.orbit.dsl.compiler.exception.CompilerException;
 
-public class OrbitDSLCompiler {
-    public static void main(final String[] meep) {
+import java.util.HashMap;
+import java.util.Map;
+
+public class MessageDeclaration {
+
+    private String messageType;
+    private String messageName;
+    private Map<String, StructField> messageFields = new HashMap<>();
+
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    public String getMessageName() {
+        return messageName;
+    }
+
+    public void setMessageName(String messageName) {
+        this.messageName = messageName;
+    }
+
+    public void addField(final StructField structField) {
+        if(messageFields.putIfAbsent(structField.getFieldName(), structField) != null) {
+            throw new CompilerException("Message fields must be unique. '" + Util.producePackageString(messageName, structField.getFieldName()));
+        }
+    }
 
 
-        OrbitDSLLexer lexer = new OrbitDSLLexer(CharStreams.fromString("package test;"));
-        CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
-        OrbitDSLParser parser = new OrbitDSLParser(commonTokenStream);
-
-        String packageName = parser.compilationUnit().packageDeclaration().packageIdentifier().getText();
-        //parser.compilationUnit().packageDeclaration().packageIdentifier().Identifier().getSymbol().getText();
-        System.out.println(packageName);
-
+    public Map<String, StructField> getMessageFields() {
+        return messageFields;
     }
 }
