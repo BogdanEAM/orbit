@@ -1,0 +1,6 @@
+package cloud.orbit.dsl.compiler.test;
+
+enum DuplicatedTag {
+    HELLO = 0,
+    ALOHA = 0
+}

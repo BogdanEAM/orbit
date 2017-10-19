@@ -30,8 +30,12 @@ package cloud.orbit.dsl.compiler.untyped;
 
 import cloud.orbit.dsl.compiler.core.CompilationContext;
 import cloud.orbit.dsl.compiler.core.Util;
-import cloud.orbit.dsl.compiler.exception.CompilerException;
+import cloud.orbit.dsl.compiler.exception.EnumDuplicateFieldException;
+import cloud.orbit.dsl.compiler.exception.EnumMissingZeroTagException;
+import cloud.orbit.dsl.compiler.exception.ReservedNameException;
+import cloud.orbit.dsl.compiler.typed.TypedUtil;
 import cloud.orbit.dsl.parser.OrbitDSLParser;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,21 +60,25 @@ public class EnumDeclaration extends TopLevelDeclaration {
     public void compile(final CompilationContext compilationContext) {
         enumName = edc.Identifier().getText();
 
+        if(Util.isReservedName(enumName)) {
+            throw new ReservedNameException(getFQN());
+        }
+
         if(edc.enumBody().enumFields() != null && edc.enumBody().enumFields().enumField() != null) {
             edc.enumBody().enumFields().enumField().forEach((field) -> {
                 final String fieldIdent = field.Identifier().getText();
                 final Integer fieldTag = Integer.parseInt(field.IntegerLiteral().getText());
                 if (enumFields.putIfAbsent(fieldIdent, fieldTag) != null) {
-                    throw new CompilerException("Can not have two enum fields with the same identifier. '" +
-                            Util.producePackageString(getPackagePath(), enumName, fieldIdent) + "'.");
+                    throw new EnumDuplicateFieldException(Util.producePackageString(getFQN(), fieldIdent));
                 }
-
+                if(Util.isReservedName(fieldIdent)) {
+                    throw new ReservedNameException(Util.producePackageString(getFQN(), fieldIdent));
+                }
             });
         }
 
         if(enumFields.values().stream().filter(x -> x == 0).count() == 0) {
-            throw new CompilerException("Must define a 0 tag in an enum. '" +
-                    Util.producePackageString(getPackagePath(), enumName) + "'.");
+            throw new EnumMissingZeroTagException(getFQN());
         }
 
         compilationContext.getUntypedResults().putDeclaration(

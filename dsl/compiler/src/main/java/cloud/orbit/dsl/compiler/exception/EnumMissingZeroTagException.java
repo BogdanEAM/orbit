@@ -26,10 +26,10 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit.dsl.compiler.typed;
+package cloud.orbit.dsl.compiler.exception;
 
-import cloud.orbit.dsl.compiler.core.Constants;
-
-public class TypedUtil {
-
+public class EnumMissingZeroTagException extends CompilerException {
+    public EnumMissingZeroTagException(final String enumPath) {
+        super("An enum must have a tag of 0: " + enumPath);
+    }
 }

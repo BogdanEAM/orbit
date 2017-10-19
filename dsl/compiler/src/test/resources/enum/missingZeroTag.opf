@@ -1,0 +1,5 @@
+package cloud.orbit.dsl.compiler.test;
+
+enum MissingZeroTag {
+    HELLO = 1
+}

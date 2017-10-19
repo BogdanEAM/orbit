@@ -26,10 +26,10 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit.dsl.compiler.typed;
+package cloud.orbit.dsl.compiler.exception;
 
-import cloud.orbit.dsl.compiler.core.Constants;
-
-public class TypedUtil {
-
+public class EnumDuplicateFieldException extends CompilerException {
+    public EnumDuplicateFieldException(final String fieldPath) {
+        super("Duplicate enum field detected: " + fieldPath);
+    }
 }

@@ -29,14 +29,21 @@
 package cloud.orbit.dsl.compiler.untyped;
 
 import cloud.orbit.dsl.compiler.exception.CompilerException;
+import cloud.orbit.dsl.compiler.exception.ParserException;
 import cloud.orbit.dsl.parser.OrbitDSLLexer;
 import cloud.orbit.dsl.parser.OrbitDSLParser;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CompilationUnit {
     final private Path filePath;
@@ -63,9 +70,15 @@ public class CompilationUnit {
             this.dslLexer = new OrbitDSLLexer(CharStreams.fromString(rawFile));
             this.commonTokenStream = new CommonTokenStream(dslLexer);
             this.dslParser = new OrbitDSLParser(commonTokenStream);
+            dslParser.setErrorHandler(new BailErrorStrategy());
             this.cuContext = this.dslParser.compilationUnit();
-        } catch(Throwable e) {
-            throw new CompilerException("Error parsing file", e);
+        } catch(ParseCancellationException e) {
+            RecognitionException re = (RecognitionException) e.getCause();
+            re.getMessage();
+
+            throw new ParserException(filePath.toString(), re.getOffendingToken().getLine(),
+                    re.getOffendingToken().getCharPositionInLine(), re.getOffendingToken().getText());
+
         }
     }
 

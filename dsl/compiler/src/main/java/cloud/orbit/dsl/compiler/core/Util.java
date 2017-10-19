@@ -39,4 +39,8 @@ public class Util {
         }
         return outputString.toString();
     }
+
+    public static boolean isReservedName(final String name) {
+        return Constants.RESERVED_KEYWORDS.contains(name);
+    }
 }

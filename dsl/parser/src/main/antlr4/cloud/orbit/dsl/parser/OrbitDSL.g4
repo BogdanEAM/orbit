@@ -61,6 +61,14 @@ packageIdentifier: Identifier | packageIdentifier '.' Identifier;
 literal: StringLiteral | IntegerLiteral | BooleanLiteral;
 type: Identifier;
 
+
+ENUM: 'enum';
+STRUCT: 'struct';
+GRAIN: 'grain';
+CLASS: 'class';
+OBJECT: 'object';
+
+
 StringLiteral: '"' StringCharacters? '"';
 IntegerLiteral: Digit+;
 BooleanLiteral: 'true' | 'false';
@@ -69,6 +77,8 @@ Identifier: IdentValidFirstChar IdentValidTrailingChar*;
 
 Whitespace: (Tab | Space | Newline) -> skip;
 Comment: (LineComment | BlockComment) -> skip;
+
+
 
 fragment IdentValidTrailingChar: LetterOrDigit | Underscore;
 fragment IdentValidFirstChar: Letter | Underscore;

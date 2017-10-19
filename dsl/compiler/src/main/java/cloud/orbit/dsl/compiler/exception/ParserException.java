@@ -26,10 +26,13 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit.dsl.compiler.typed;
+package cloud.orbit.dsl.compiler.exception;
 
-import cloud.orbit.dsl.compiler.core.Constants;
+import java.util.List;
 
-public class TypedUtil {
-
+public class ParserException extends CompilerException {
+    public ParserException(final String file, final Integer line, final Integer column, final String token) {
+        super("Parsing error at " + file + ":" + line + ":" + column + ": '"
+                + token + "'.");
+    }
 }

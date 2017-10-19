@@ -29,17 +29,15 @@
 package cloud.orbit.dsl.compiler.pass;
 
 import cloud.orbit.dsl.compiler.core.CompilationContext;
-import cloud.orbit.dsl.compiler.exception.CompilerException;
+import cloud.orbit.dsl.compiler.core.Util;
+import cloud.orbit.dsl.compiler.exception.ReservedNameException;
 import cloud.orbit.dsl.compiler.typed.TypedUtil;
 
 public class SecondPass {
     public void compile(final CompilationContext compilationContext) {
         compilationContext.getUntypedResults().getDeclarations().values().forEach((decl) -> {
 
-            // Check if name is reserved
-            if(TypedUtil.isReservedName(decl.getShortName())) {
-                throw new CompilerException("Name '" + decl.getShortName() + "' is reserved. '" + decl.getFQN() + "'.");
-            }
+
         });
     }
 }

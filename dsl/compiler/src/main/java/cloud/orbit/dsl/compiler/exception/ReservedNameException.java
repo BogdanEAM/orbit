@@ -26,10 +26,10 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit.dsl.compiler.typed;
+package cloud.orbit.dsl.compiler.exception;
 
-import cloud.orbit.dsl.compiler.core.Constants;
-
-public class TypedUtil {
-
+public class ReservedNameException extends CompilerException {
+    public ReservedNameException(final String reason) {
+        super("Name is reserved: " + reason);
+    }
 }

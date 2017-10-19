@@ -33,9 +33,12 @@ import cloud.orbit.dsl.compiler.exception.CompilerException;
 import cloud.orbit.dsl.compiler.core.CompilationContext;
 import cloud.orbit.dsl.compiler.pass.FirstPass;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,6 +76,44 @@ public class CompileRunner {
         buildInternal(inputFiles, outputDirectory);
     }
 
+    public static void buildFile(final String inputFile, final String outputDirectory) {
+        try {
+            final Path inputPath = Paths.get(inputFile);
+            final Path outputPath = Paths.get(outputDirectory);
+            buildFile(inputPath, outputPath);
+        }
+        catch(CompilerException ce) {
+            throw ce;
+        }
+        catch(Throwable e) {
+            throw new CompilerException("Unknown compiler error", e);
+        }
+    }
+
+    public static void buildFile(final Path inputFile, final Path outputDirectory) {
+        File file = inputFile.toFile();
+
+        if(!file.exists() || !file.isFile()) {
+            String abs = file.getAbsolutePath();
+            throw new CompilerException("Input file does not exist. '" + inputFile.toString() + "'.");
+        }
+
+        buildInternal(Collections.singletonList(inputFile), outputDirectory);
+    }
+
+    public static void testRun(final String inputFile) {
+        try {
+            final Path inputPath = Paths.get(inputFile);
+            buildFile(inputPath, null);
+        }
+        catch(CompilerException ce) {
+            throw ce;
+        }
+        catch(Throwable e) {
+            throw new CompilerException("Unknown compiler error", e);
+        }
+    }
+
     private static void buildInternal(final List<Path> inputFiles, final Path outputDirectory) {
         final CompilationContext compilationContext = new CompilationContext();
         compilationContext.setInputFiles(inputFiles);
@@ -85,5 +126,6 @@ public class CompileRunner {
         secondPass.compile(compilationContext);
 
     }
+
 
 }

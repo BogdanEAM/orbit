@@ -48,7 +48,7 @@ public class FirstPass {
     private void processFile(final Path file) {
         final CompilationUnit compilationUnit = new CompilationUnit(file);
         final String cuPackage = compilationUnit.getParsedData().packageDeclaration().packageIdentifier().getText();
-        final List<String> cuImports = compilationUnit.getParsedData().importDelcaration().stream().map((x) -> x.packageIdentifier().getText()).collect(Collectors.toList());
+        final List<String> cuImports = compilationUnit.getParsedData().importDeclaration().stream().map((x) -> x.packageIdentifier().getText()).collect(Collectors.toList());
 
         compilationUnit.getParsedData().topLeveltypeDeclaration().forEach(
                 (tldc) -> {

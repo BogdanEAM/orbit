@@ -1,0 +1,6 @@
+package cloud.orbit.dsl.compiler.test;
+
+enum DuplicateFieldName {
+    HELLO = 0,
+    HELLO = 1
+}

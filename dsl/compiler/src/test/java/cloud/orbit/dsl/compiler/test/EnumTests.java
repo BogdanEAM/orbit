@@ -26,10 +26,41 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit.dsl.compiler.typed;
+package cloud.orbit.dsl.compiler.test;
 
-import cloud.orbit.dsl.compiler.core.Constants;
+import cloud.orbit.dsl.compiler.CompileRunner;
+import cloud.orbit.dsl.compiler.exception.CompilerException;
+import cloud.orbit.dsl.compiler.exception.EnumDuplicateFieldException;
+import cloud.orbit.dsl.compiler.exception.EnumMissingZeroTagException;
+import cloud.orbit.dsl.compiler.exception.ParserException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class TypedUtil {
+public class EnumTests {
 
+    @Test
+    public void duplicateFieldNameException() {
+        Assertions.assertThrows(EnumDuplicateFieldException.class, () -> {
+            CompileRunner.testRun("src/test/resources/enum/duplicateFieldName.opf");
+        });
+    }
+
+    @Test
+    public void missingZeroTagException() {
+        Assertions.assertThrows(EnumMissingZeroTagException.class, () -> {
+            CompileRunner.testRun("src/test/resources/enum/missingZeroTag.opf");
+        });
+    }
+
+    @Test
+    public void reservedEnumNameException() {
+        Assertions.assertThrows(ParserException.class, () -> {
+            CompileRunner.testRun("src/test/resources/enum/reservedEnumName.opf");
+        });
+    }
+
+    @Test
+    public void duplicatedTagAllowed() {
+        CompileRunner.testRun("src/test/resources/enum/duplicateTag.opf");
+    }
 }
