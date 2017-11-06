@@ -26,10 +26,6 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "orbit"
-
-// Framework
-include ":framework:orbit-core"
-
-// Samples
-include ":samples:helloworld"
+dependencies {
+    compile("org.slf4j:slf4j-api:1.7.9")
+}

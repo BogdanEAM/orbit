@@ -26,10 +26,24 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "orbit"
+package cloud.orbit.core.cluster
 
-// Framework
-include ":framework:orbit-core"
+import cloud.orbit.core.util.secureBase64Random
 
-// Samples
-include ":samples:helloworld"
+class NodeIdentity private constructor(private val identityString: String) {
+    companion object {
+        @JvmStatic
+        fun fromString(identityString: String) = NodeIdentity(identityString)
+
+        @JvmStatic
+        fun createRandom() = NodeIdentity(String.secureBase64Random())
+    }
+
+    override fun toString(): String = identityString
+    override fun hashCode(): Int  = identityString.hashCode()
+    override fun equals(other: Any?): Boolean = when(other) {
+        is NodeIdentity -> other.identityString == identityString
+        is String -> other == identityString
+        else -> false
+    }
+}

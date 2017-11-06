@@ -26,10 +26,11 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "orbit"
+package cloud.orbit
 
-// Framework
-include ":framework:orbit-core"
-
-// Samples
-include ":samples:helloworld"
+class OrbitException: RuntimeException {
+    constructor(message: String, cause: Throwable): super(message, cause)
+    constructor(message: String): super(message)
+    constructor(cause: Throwable): super(cause)
+    constructor(): super()
+}

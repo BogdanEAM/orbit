@@ -26,39 +26,15 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit.util
+package cloud.orbit.sample.helloworld
 
-import java.security.SecureRandom
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.boot.autoconfigure.SpringBootApplication
 
-object StringUtils {
-    private val secureRandom = SecureRandom()
+@SpringBootApplication
+@EnableAutoConfiguration
+class Application {
 
-    private val base64AllowedCharacters = charArrayOf(
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'
-    )
-
-    @JvmStatic
-    @JvmOverloads
-    fun secureBase64Random(numBits: Int = 128): String {
-        tailrec fun processIdentity(remainingBits: Int, outSb: StringBuilder) {
-            if (remainingBits > 0) {
-                val nextIntBound = if (remainingBits > 6) 64 else (1 shl remainingBits)
-                val nextInt = secureRandom.nextInt(nextIntBound)
-                outSb.append(base64AllowedCharacters[nextInt])
-                processIdentity(remainingBits - 6, outSb)
-            }
-        }
-        val result = StringBuilder()
-        processIdentity(numBits, result)
-        return result.toString()
-    }
 }
-
-fun String.Companion.secureBase64Random(numBits: Int = 128): String = StringUtils.secureBase64Random(numBits)
-
 
 

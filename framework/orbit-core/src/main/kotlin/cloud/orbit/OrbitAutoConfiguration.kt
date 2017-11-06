@@ -26,10 +26,29 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "orbit"
+package cloud.orbit
 
-// Framework
-include ":framework:orbit-core"
+import cloud.orbit.core.cluster.ClusterIdentity
+import cloud.orbit.core.cluster.ClusterProperties
+import cloud.orbit.core.cluster.NodeIdentity
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
 
-// Samples
-include ":samples:helloworld"
+@Configuration
+@ComponentScan("cloud.orbit.core")
+@EnableConfigurationProperties(ClusterProperties::class)
+class OrbitAutoConfiguration constructor(
+        @Autowired private val clusterProperties: ClusterProperties
+) {
+    @Bean
+    fun clusterIdentity(): ClusterIdentity =
+            ClusterIdentity.fromString(clusterProperties.clusterIdentity)
+
+    @Bean
+    fun nodeIdentity(): NodeIdentity =
+            NodeIdentity.fromString(clusterProperties.nodeIdentity)
+
+}

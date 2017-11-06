@@ -26,10 +26,14 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "orbit"
+package cloud.orbit.core.logging
 
-// Framework
-include ":framework:orbit-core"
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-// Samples
-include ":samples:helloworld"
+object Logging {
+    fun <T> logger(clazz: Class<T>): Logger = LoggerFactory.getLogger(clazz)
+    inline fun <reified T> logger() = Logging.logger(T::class.java)
+}
+
+inline fun <reified T> loggerFor() = Logging.logger(T::class.java)

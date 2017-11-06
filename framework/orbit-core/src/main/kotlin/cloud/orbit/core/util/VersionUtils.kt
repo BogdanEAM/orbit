@@ -26,10 +26,9 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "orbit"
+package cloud.orbit.core.util
 
-// Framework
-include ":framework:orbit-core"
-
-// Samples
-include ":samples:helloworld"
+object VersionUtils {
+    val orbitVersion
+    get() = VersionUtils::class.java.`package`.implementationVersion ?: "development"
+}

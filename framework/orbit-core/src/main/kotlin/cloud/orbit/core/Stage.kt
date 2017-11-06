@@ -26,10 +26,26 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "orbit"
+package cloud.orbit.core
 
-// Framework
-include ":framework:orbit-core"
+import cloud.orbit.core.cluster.ClusterIdentity
+import cloud.orbit.core.cluster.NodeIdentity
+import cloud.orbit.core.logging.loggerFor
+import cloud.orbit.core.util.VersionUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+import javax.annotation.PostConstruct
 
-// Samples
-include ":samples:helloworld"
+@Component
+class Stage {
+    private val logger = loggerFor<Stage>()
+
+    @Autowired
+    private lateinit var test: ClusterIdentity
+
+    @PostConstruct
+    fun start() {
+        logger.info("Starting Orbit Stage...")
+        logger.info("Orbit Version: ${VersionUtils.orbitVersion}")
+    }
+}

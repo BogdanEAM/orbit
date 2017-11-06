@@ -26,10 +26,10 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "orbit"
+package cloud.orbit.sample.helloworld
 
-// Framework
-include ":framework:orbit-core"
+import org.springframework.boot.SpringApplication
 
-// Samples
-include ":samples:helloworld"
+fun main(args: Array<String>) {
+    val app = SpringApplication.run(Application::class.java)
+}
