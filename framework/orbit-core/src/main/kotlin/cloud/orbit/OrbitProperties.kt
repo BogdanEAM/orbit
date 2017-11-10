@@ -28,28 +28,17 @@
 
 package cloud.orbit
 
-import cloud.orbit.core.OrbitApplication
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.event.ContextClosedEvent
-import org.springframework.context.event.EventListener
+import cloud.orbit.core.cluster.NodeIdentity
+import org.springframework.boot.context.properties.ConfigurationProperties
 
-@Configuration
-@ComponentScan("cloud.orbit.core")
-@EnableConfigurationProperties(OrbitProperties::class)
-class OrbitAutoConfiguration constructor(
-        @Autowired private val orbitApplication: OrbitApplication
-){
-    @EventListener
-    fun onAppReady(applicationReadyEvent: ApplicationReadyEvent) {
-        orbitApplication.onStartup()
-    }
+@ConfigurationProperties(prefix = "orbit")
+class OrbitProperties {
+    // Cluster
+    var clusterIdentity: String = "orbit-cluster"
+    var nodeIdentity: String = NodeIdentity.createRandom().toString()
 
-    @EventListener
-    fun onAppClosed(contextClosedEvent: ContextClosedEvent) {
-        orbitApplication.onShutdown()
-    }
+    var pulseIntervalMilliseconds: Long = 1000
+
+    // Parallel
+    var orbitParallelPoolSize: Int = 16
 }

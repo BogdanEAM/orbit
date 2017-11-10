@@ -28,24 +28,40 @@
 
 package cloud.orbit.core
 
-import cloud.orbit.core.cluster.ClusterIdentity
-import cloud.orbit.core.cluster.NodeIdentity
+import cloud.orbit.core.cluster.ClusterManager
 import cloud.orbit.core.logging.loggerFor
+import cloud.orbit.core.runtime.PulseManager
+import cloud.orbit.core.util.Pools
 import cloud.orbit.core.util.VersionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import javax.annotation.PostConstruct
+import reactor.core.publisher.toMono
 
 @Component
-class Stage {
+class Stage constructor(
+        @Autowired private val clusterManager: ClusterManager,
+        @Autowired private val pulseManager: PulseManager
+){
     private val logger = loggerFor<Stage>()
 
-    @Autowired
-    private lateinit var test: ClusterIdentity
+    fun startup() = Unit.toMono()
+            .publishOn(Pools.parallel)
+            .doOnNext {
+                logger.info("Orbit Version: ${VersionUtils.orbitVersion}")
+                logger.info("Orbit Cluster Identity: ${clusterManager.clusterIdentity}")
+                logger.info("Orbit Node Identity: ${clusterManager.localNodeInfo.nodeIdentity}")
+            }
+            .flatMap {
+                // Start cluster
+                Unit.toMono()
+            }
+            .doOnNext {
+                pulseManager.startPulse()
+            }
 
-    @PostConstruct
-    fun start() {
-        logger.info("Starting Orbit Stage...")
-        logger.info("Orbit Version: ${VersionUtils.orbitVersion}")
-    }
+    fun shutdown() = Unit.toMono()
+            .publishOn(Pools.parallel)
+            .doOnNext {
+                pulseManager.stopPulse()
+            }
 }

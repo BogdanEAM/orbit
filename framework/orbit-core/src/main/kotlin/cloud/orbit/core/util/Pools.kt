@@ -26,12 +26,12 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit.core.cluster
+package cloud.orbit.core.util
 
-import org.springframework.boot.context.properties.ConfigurationProperties
+import reactor.core.scheduler.Schedulers
 
-@ConfigurationProperties(prefix = "orbit.cluster")
-class ClusterProperties {
-    var clusterIdentity: String = "orbit-cluster"
-    var nodeIdentity: String = NodeIdentity.createRandom().toString()
+object Pools {
+    val parallel = Schedulers.newParallel("orbit-cpu")
+    val elastic = Schedulers.newElastic("orbit-io")
+
 }

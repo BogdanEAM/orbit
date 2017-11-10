@@ -26,30 +26,26 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit
+package cloud.orbit.core.cluster
 
-import cloud.orbit.core.OrbitApplication
+import cloud.orbit.OrbitProperties
+import cloud.orbit.core.runtime.PulseAware
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.event.ContextClosedEvent
-import org.springframework.context.event.EventListener
+import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 
-@Configuration
-@ComponentScan("cloud.orbit.core")
-@EnableConfigurationProperties(OrbitProperties::class)
-class OrbitAutoConfiguration constructor(
-        @Autowired private val orbitApplication: OrbitApplication
-){
-    @EventListener
-    fun onAppReady(applicationReadyEvent: ApplicationReadyEvent) {
-        orbitApplication.onStartup()
-    }
+@Component
+class ClusterManager constructor(
+        @Autowired private val orbitProperties: OrbitProperties
+): PulseAware {
+    val clusterIdentity = ClusterIdentity.fromString(orbitProperties.clusterIdentity)
 
-    @EventListener
-    fun onAppClosed(contextClosedEvent: ContextClosedEvent) {
-        orbitApplication.onShutdown()
-    }
+    @Volatile
+    final var localNodeInfo: NodeInfo = NodeInfo(NodeIdentity.fromString(orbitProperties.nodeIdentity))
+        private set
+
+
+    override fun onPulse() = Unit.toMono()
+
 }

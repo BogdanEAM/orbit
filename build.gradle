@@ -36,7 +36,8 @@ buildscript {
         orgWebsite = "http://www.ea.com"
 
         // Spring
-        springBootVersion = "1.5.8.RELEASE"
+        springBootVersion = "2.0.0.M6"
+        reactorVersion = "3.1.1.RELEASE"
 
         // Kotlin
         kotlinVersion = "1.1.51"
@@ -48,6 +49,9 @@ buildscript {
         // Tests
         junitJupiterVersion  = "5.0.1"
         junitPlatformVersion = "1.0.1"
+
+        // Misc
+        slf4jVersion = "1.7.25"
     }
 
     dependencies {
@@ -70,6 +74,9 @@ allprojects {
 subprojects {
     repositories {
         mavenCentral()
+        maven {
+            url 'https://repo.spring.io/libs-milestone'
+        }
     }
 }
 
@@ -109,19 +116,9 @@ configure([
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion")
+        compile("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
         testCompile("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
         testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
-    }
-}
-
-// Spring Boot Projects
-configure([
-        // Framework
-        project(":framework:orbit-core"),
-]) {
-    dependencies {
-        compile("org.springframework.boot:spring-boot:$springBootVersion")
-        compile("javax.annotation:javax.annotation-api:1.3.1")
     }
 }

@@ -26,30 +26,10 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit
+package cloud.orbit.core.runtime
 
-import cloud.orbit.core.OrbitApplication
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.event.ContextClosedEvent
-import org.springframework.context.event.EventListener
+import reactor.core.publisher.Mono
 
-@Configuration
-@ComponentScan("cloud.orbit.core")
-@EnableConfigurationProperties(OrbitProperties::class)
-class OrbitAutoConfiguration constructor(
-        @Autowired private val orbitApplication: OrbitApplication
-){
-    @EventListener
-    fun onAppReady(applicationReadyEvent: ApplicationReadyEvent) {
-        orbitApplication.onStartup()
-    }
-
-    @EventListener
-    fun onAppClosed(contextClosedEvent: ContextClosedEvent) {
-        orbitApplication.onShutdown()
-    }
+interface PulseAware {
+    fun onPulse(): Mono<*>
 }

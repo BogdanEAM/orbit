@@ -26,30 +26,51 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit
+package cloud.orbit.core
 
-import cloud.orbit.core.OrbitApplication
+import cloud.orbit.core.logging.loggerFor
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.event.ContextClosedEvent
-import org.springframework.context.event.EventListener
+import org.springframework.stereotype.Component
+import java.util.concurrent.CountDownLatch
 
-@Configuration
-@ComponentScan("cloud.orbit.core")
-@EnableConfigurationProperties(OrbitProperties::class)
-class OrbitAutoConfiguration constructor(
-        @Autowired private val orbitApplication: OrbitApplication
-){
-    @EventListener
-    fun onAppReady(applicationReadyEvent: ApplicationReadyEvent) {
-        orbitApplication.onStartup()
+@Component
+class OrbitApplication constructor(
+        @Autowired private val stage: Stage
+) {
+    private val logger = loggerFor<OrbitApplication>()
+    private val shutdownLatch = CountDownLatch(1)
+
+    fun onStartup() {
+        logger.info("Starting Orbit...")
+        startLatchThread()
+        stage.startup()
+                .subscribe({
+                    logger.info("Orbit startup successful.")
+                }, {
+                    logger.error("Orbit startup error.", it)
+                    releaseLatchThread()
+                })
     }
 
-    @EventListener
-    fun onAppClosed(contextClosedEvent: ContextClosedEvent) {
-        orbitApplication.onShutdown()
+    fun onShutdown() {
+        logger.info("Shutting down Orbit...")
+        stage.shutdown().subscribe({
+            logger.info("Orbit shutdown successful.")
+            releaseLatchThread()
+        }, {
+            logger.error("Orbit shutdown error.", it)
+            releaseLatchThread()
+        })
+    }
+
+    private fun startLatchThread() {
+        val keepAliveThread = Thread { shutdownLatch.await() }
+        keepAliveThread.name = "orbit-keepalive"
+        keepAliveThread.isDaemon = false
+        keepAliveThread.start()
+    }
+
+    private fun releaseLatchThread() {
+        shutdownLatch.countDown()
     }
 }

@@ -33,4 +33,6 @@ mainClassName = "cloud.orbit.sample.helloworld.MainKt"
 dependencies {
     compile(project(":framework:orbit-core"))
     compile("org.springframework.boot:spring-boot-starter:$springBootVersion")
+    compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+    compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
 }

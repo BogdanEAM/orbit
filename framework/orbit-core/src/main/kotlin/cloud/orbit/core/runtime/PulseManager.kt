@@ -26,30 +26,48 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package cloud.orbit
+package cloud.orbit.core.runtime
 
-import cloud.orbit.core.OrbitApplication
+import cloud.orbit.OrbitProperties
+import cloud.orbit.core.logging.loggerFor
+import cloud.orbit.core.util.Pools
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.event.ContextClosedEvent
-import org.springframework.context.event.EventListener
+import org.springframework.stereotype.Component
+import reactor.core.Disposable
+import reactor.core.publisher.Flux
+import reactor.core.publisher.toFlux
+import java.time.Duration
 
-@Configuration
-@ComponentScan("cloud.orbit.core")
-@EnableConfigurationProperties(OrbitProperties::class)
-class OrbitAutoConfiguration constructor(
-        @Autowired private val orbitApplication: OrbitApplication
-){
-    @EventListener
-    fun onAppReady(applicationReadyEvent: ApplicationReadyEvent) {
-        orbitApplication.onStartup()
+@Component
+class PulseManager constructor(
+        @Autowired private val orbitProperties: OrbitProperties,
+        @Autowired private val pulseAwareList: List<PulseAware>?
+) {
+    private val logger = loggerFor<PulseManager>()
+
+    private val pulseStream = Flux
+            .interval(Duration.ofMillis(orbitProperties.pulseIntervalMilliseconds))
+            .publishOn(Pools.parallel)
+            .flatMap {
+                pulseAwareList?.toFlux() ?: Flux.empty<PulseAware>()
+            }
+            .flatMap {
+                it.onPulse()
+            }
+            .doOnError {
+                logger.error("Error during Orbit pulse.", it)
+                startPulse()
+            }
+
+
+    private var subscriber: Disposable? = null
+
+    fun startPulse() {
+        logger.info("Starting Orbit pulse.")
+        subscriber = pulseStream.subscribe()
     }
 
-    @EventListener
-    fun onAppClosed(contextClosedEvent: ContextClosedEvent) {
-        orbitApplication.onShutdown()
+    fun stopPulse() {
+        subscriber?.dispose()
     }
 }
